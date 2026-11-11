@@ -131,7 +131,7 @@ namespace PerkEntryPointExtenderAPI
 
 		static RequestFunction request_interface = nullptr;
 
-		HINSTANCE API = GetModuleHandle(L"PerkEntryPointExtender.dll");
+		HINSTANCE API = GetModuleHandleW(L"PerkEntryPointExtender.dll");
 
 		if (API == nullptr) {
             //RE::ConsoleLog::GetSingleton()->Print("Hello, total failure!");

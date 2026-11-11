@@ -290,11 +290,11 @@ struct Hooks {
                                                  {a_AMC->currentSpell});
                             if (magnitude * updatedtime <
                                 a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina)) {
-                                a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                                a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                           RE::ActorValue::kStamina,
                                                                           -magnitude * updatedtime);
                             } else {
-                                RE::DebugNotification("Not enough stamina to cast this spell", nullptr, true);
+                                RE::SendHUDMessage::ShowHUDMessage("Not enough stamina to cast this spell", nullptr, true);
 
                                 breakloop = 1;
                                 // a_AMC->InterruptCast(false);
@@ -317,11 +317,11 @@ struct Hooks {
                                                  {a_AMC->currentSpell});
                             if (magnitude * updatedtime <
                                 a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kHealth)) {
-                                a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                                a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                           RE::ActorValue::kHealth,
                                                                           -magnitude * updatedtime);
                             } else {
-                                RE::DebugNotification("Not enough health to cast this spell", nullptr, true);
+                                RE::SendHUDMessage::ShowHUDMessage("Not enough health to cast this spell", nullptr, true);
 
                                 breakloop = 1;
                             }
@@ -339,7 +339,7 @@ struct Hooks {
                         //             RE::HandleEntryPoint(RE::PerkEntryPoint::kModSpellCost, a, &magnitude,
                         //             "SpellCosts", 3,
                         //                                  {a_AMC->currentSpell});
-                        //             a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                        //             a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                         //                                                       RE::ActorValue::kStamina, -magnitude *
                         //                                                       updatedtime);
                         //         }
@@ -354,7 +354,7 @@ struct Hooks {
                         //             RE::HandleEntryPoint(RE::PerkEntryPoint::kModSpellCost, a, &magnitude,
                         //             "SpellCosts", 4,
                         //                                  {a_AMC->currentSpell});
-                        //             a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                        //             a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                         //                                                       RE::ActorValue::kHealth, -magnitude *
                         //                                                       updatedtime);
                         //         }
@@ -440,10 +440,10 @@ struct Hooks {
                                          {a_AMC->currentSpell});
 
                     if (magnitude < a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina)) {
-                        a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                        a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                   RE::ActorValue::kStamina, -magnitude);
                     } else {
-                        RE::DebugNotification("Not enough stamina to cast this spell", nullptr, true);
+                        RE::SendHUDMessage::ShowHUDMessage("Not enough stamina to cast this spell", nullptr, true);
                         breakloop = 1;
                     }
                 }
@@ -461,10 +461,10 @@ struct Hooks {
                                      {a_AMC->currentSpell});
 
                 if (magnitude < a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kHealth)) {
-                    a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                    a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                               RE::ActorValue::kHealth, -magnitude);
                 } else {
-                    RE::DebugNotification("Not enough health to cast this spell", nullptr, true);
+                    RE::SendHUDMessage::ShowHUDMessage("Not enough health to cast this spell", nullptr, true);
                     breakloop = 1;
                 }
             }
@@ -478,10 +478,10 @@ struct Hooks {
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModSpellCost, a, &staminacost, "CastSpell", 20,
                                      {a_AMC->currentSpell});
                 if (staminacost < a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina)) {
-                    a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                    a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                               RE::ActorValue::kStamina, -staminacost);
                 } else {
-                    a->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                    a->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                               RE::ActorValue::kStamina, -(a->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina)));
                 }
             
@@ -493,7 +493,7 @@ struct Hooks {
                                  {a_AMC->currentSpell, a});
             CastSpellsPerk(vecSpellsStartCast, a, a);
             if (breakloop == 1) {
-                //RE::DebugNotification("TestString", nullptr, true);
+                //RE::SendHUDMessage::ShowHUDMessage("TestString", nullptr, true);
                 a_AMC->InterruptCast(true);
             } else {
                 func(a_AMC);
@@ -867,7 +867,7 @@ struct Hooks {
                                     RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_actor,
                                                          &weaponspeedmult, "TimeScale", 3, {});
                                     if (*Settings::CreatureWeaponSpeedDefaultMessage == true && weaponspeedmult == 0.0f) {
-                                    RE::DebugNotification(
+                                    RE::SendHUDMessage::ShowHUDMessage(
                                         "Creature Weaponspeedmult detected as 0, consider changing aTweaks toml "
                                         "settings",
                                         nullptr, true);
@@ -1312,7 +1312,7 @@ if (a_proje->GetActorCause()) {
                 //    a_player->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
 
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_player, &currenttimescale, "TimeScale", 6, {});
-                a_player->AsActorValueOwner()->RestoreActorValue(
+                a_player->AsActorValueOwner()->ModActorValue(
                     RE::ACTOR_VALUE_MODIFIER::kDamage, RE::ActorValue::kHealth,
                     healthregen * a_delta * currenttimescale);
             }
@@ -1326,7 +1326,7 @@ if (a_proje->GetActorCause()) {
                     //a_player->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_player, &currenttimescale, "TimeScale",
                                      6, {});
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                  RE::ActorValue::kStamina,
                                                                  staminaregen * a_delta * currenttimescale);
             }
@@ -1340,7 +1340,7 @@ if (a_proje->GetActorCause()) {
                     //a_player->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_player, &currenttimescale, "TimeScale",
                                      6, {});
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                  RE::ActorValue::kMagicka,
                                                                  magickaregen * a_delta * currenttimescale);
             }
@@ -1440,26 +1440,26 @@ if (a_proje->GetActorCause()) {
                 float deltaattackdamage = currentattackdamage - previousattackdamage;
                 float deltaattackspeed = currentattackspeed - previousattackspeed;
             
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, RE::ActorValue::kSpeedMult, -deltaspeedmult);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, RE::ActorValue::kSpeedMult, -deltaspeedmult);
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kIllusionModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kDestructionModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kConjurationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kRestorationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kAlterationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kStaminaRateMult, -deltastaminarate);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kAttackDamageMult, -deltaattackdamage);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kWeaponSpeedMult, -deltaattackspeed);
-                a_player->AsActorValueOwner()->RestoreActorValue(
+                a_player->AsActorValueOwner()->ModActorValue(
                     RE::ACTOR_VALUE_MODIFIER::kPermanent, RE::ActorValue::kLeftWeaponSpeedMultiply, -deltaattackspeed);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                              RE::ActorValue::kRightAttackCondition,
                                                              (currentstaminapercent - previousstaminapercent));
 
@@ -1506,13 +1506,13 @@ if (a_proje->GetActorCause()) {
 //                        float diceroll2 = float(dist(e2))/100.0f;
 //                        
 //
-//                        a_char->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIERS::kPermanent, RE::ActorValue::kSpeedMult,
+//                        a_char->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIERS::kPermanent, RE::ActorValue::kSpeedMult,
 //                                              diceroll1 * (*Settings::VariableNPCmovementspeed));
 //
 //                        a_char->AsActorValueOwner()->RestoreActorValue(
 //                            RE::ACTOR_VALUE_MODIFIERS::kPermanent, RE::ActorValue::kWeaponSpeedMult,
 //                            diceroll2 * (*Settings::VariableNPCweaponspeed) / 100.0f);
-//                        a_char->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIERS::kPermanent, (LookupActorValueByName("npcAV")), 10.0f);
+//                        a_char->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIERS::kPermanent, (LookupActorValueByName("npcAV")), 10.0f);
 //                        // 
 ///*                        char buffer[150];
 //
@@ -1625,27 +1625,27 @@ if (a_proje->GetActorCause()) {
                 float deltaattackdamage = currentattackdamage - previousattackdamage;
                 float deltaattackspeed = currentattackspeed - previousattackspeed;
 
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kSpeedMult, -deltaspeedmult);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kIllusionModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kDestructionModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kConjurationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kRestorationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kAlterationModifier, -deltaspellcost);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kStaminaRateMult, -deltastaminarate);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kAttackDamageMult, -deltaattackdamage);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kWeaponSpeedMult, -deltaattackspeed);
-                a_player->AsActorValueOwner()->RestoreActorValue(
+                a_player->AsActorValueOwner()->ModActorValue(
                     RE::ACTOR_VALUE_MODIFIER::kPermanent, RE::ActorValue::kLeftWeaponSpeedMultiply, -deltaattackspeed);
-                a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
+                a_player->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent,
                                                                  RE::ActorValue::kRightAttackCondition,
                                                                  (currentstaminapercent - previousstaminapercent));
 
@@ -1677,7 +1677,7 @@ if (a_proje->GetActorCause()) {
                     //a_char->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_char, &currenttimescale, "TimeScale",
                                      6, {});
-                a_char->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                a_char->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                  RE::ActorValue::kHealth,
                                                                  healthregen * a_delta * currenttimescale);
             }
@@ -1691,7 +1691,7 @@ if (a_proje->GetActorCause()) {
                     //a_char->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_char, &currenttimescale, "TimeScale",
                                      6, {});
-                a_char->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                a_char->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                  RE::ActorValue::kStamina,
                                                                  staminaregen * a_delta * currenttimescale);
             }
@@ -1705,7 +1705,7 @@ if (a_proje->GetActorCause()) {
                     //a_char->AsActorValueOwner()->GetActorValue((RE::ActorValue::kLeftMobilityCondition)) / 100.0f;
                 RE::HandleEntryPoint(RE::PerkEntryPoint::kModPercentBlocked, a_char, &currenttimescale, "TimeScale",
                                      6, {});
-                a_char->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                a_char->AsActorValueOwner()->ModActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                                                                  RE::ActorValue::kMagicka,
                                                                  magickaregen * a_delta * currenttimescale);
             }
@@ -1799,7 +1799,7 @@ if (a_proje->GetActorCause()) {
 
                             if (extracost > 0.0f && a_MC->GetCasterAsActor()->AsActorValueOwner()->GetActorValue(
                                                         RE::ActorValue::kMagicka) > extracost) {
-                                a_MC->GetCasterAsActor()->AsActorValueOwner()->RestoreActorValue(
+                                a_MC->GetCasterAsActor()->AsActorValueOwner()->ModActorValue(
                                     RE::ACTOR_VALUE_MODIFIERS::kDamage, RE::ActorValue::kMagicka, -extracost);
                                 a_MC->CastSpellImmediate(a_MI, 0, a_target, a_effectiveness, 0, 0.0f, 0i64);
                             } else if (extracost <= 0.0f) {
@@ -2113,6 +2113,7 @@ bool PapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
 
 SKSEPluginLoad(const SKSE::LoadInterface *skse) {
     SKSE::Init(skse);
+    SKSE::AllocTrampoline(512);  // 14.x allocates once: 14 call hooks x 14 bytes
     SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message *message) {
         if (message->type == SKSE::MessagingInterface::kDataLoaded) {
         
