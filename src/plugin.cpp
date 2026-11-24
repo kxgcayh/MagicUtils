@@ -631,7 +631,8 @@ struct Hooks {
             // auto source = a_AMC->GetCastingSource();
             //if (a_AI->GetActorRuntimeData().currentProcess) 
             //   if (a_AI->GetActorRuntimeData().currentProcess->high)
-            if (a_AI->GetActorRuntimeData().currentProcess->high->attackData.get()) {
+            auto* process = a_AI->GetActorRuntimeData().currentProcess;
+            if (process && process->high && process->high->attackData.get()) {
                 if (a_AI->GetAttackingWeapon()) {
                 
                     if (RE::TESBoundObject* objectweapon = a_AI->GetAttackingWeapon()->object) {
@@ -1264,7 +1265,8 @@ if (a_proje->GetActorCause()) {
                 //   a_thismmpc->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kNextAttack)
             }
             if (*Settings::PowerAttackingForcedMovement != 100.0f) {
-                if (a_thismmpc->GetActorRuntimeData().currentProcess->high->attackData.get()) {
+                auto* process = a_thismmpc->GetActorRuntimeData().currentProcess;
+                if (process && process->high && process->high->attackData.get()) {
                     if (a_thismmpc->GetActorRuntimeData().currentProcess->high->attackData.get()->data.flags.any(RE::AttackData::AttackFlag::kPowerAttack)) {
                     Delta.x *= *Settings::PowerAttackingForcedMovement/100.0f;
                     Delta.y *= *Settings::PowerAttackingForcedMovement/100.0f;
@@ -1780,13 +1782,14 @@ if (a_proje->GetActorCause()) {
             static void thunk(RE::MagicCaster* a_MC, RE::MagicItem* a_MI, RE::Actor* a_target, void* boundobject,
                               bool arg_bool) {
             if (a_MC->GetCasterAsActor()) {
-                if (a_MC->GetCasterAsActor()->GetActorRuntimeData().currentProcess) {
-                                if (a_MC->GetCasterAsActor()
-                                        ->GetActorRuntimeData()
-                                        .currentProcess->high->attackData.get()) {
-                        if ((a_MC->GetCasterAsActor()
-                                ->GetActorRuntimeData()
-                                .currentProcess->high->attackData.get()->data.flags.any(
+                if (auto* process = a_MC->GetCasterAsActor()->GetActorRuntimeData().currentProcess) {
+                                auto* high = process->high;  // read once: the pointer can go away on another thread
+                                if (!high) {  // an actor outside high process has no attack data: keep the game's own enchant
+                                    func(a_MC, a_MI, a_target, boundobject, arg_bool);
+                                    return;
+                                }
+                                if (high->attackData.get()) {
+                        if ((high->attackData.get()->data.flags.any(
              RE::AttackData::AttackFlag::kPowerAttack) == 1) &&
         *Settings::PowerAttackEnchant) {
                             float a_effectiveness = *Settings::PowerAttackEnchantBaseMag;
